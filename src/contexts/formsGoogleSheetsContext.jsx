@@ -11,6 +11,8 @@ const DISCOVERY_DOCS = [
 ];
 const SCOPES = "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/contacts.readonly";
 
+const REDIRECT_URI = "https://webappsils.netlify.app/callback";  // Asegúrate de que esta URL esté configurada correctamente
+
 // Contexto
 const GoogleSheetsContext = createContext();
 
@@ -45,6 +47,7 @@ export const GoogleSheetsProvider = ({ children }) => {
       const client = google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
         scope: SCOPES,
+        redirect_uri: REDIRECT_URI, 
         callback: (resp) => {
           if (resp.error) return;
           localStorage.setItem("google_token", JSON.stringify(resp)); // Guarda el token
