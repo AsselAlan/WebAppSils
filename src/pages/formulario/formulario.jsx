@@ -1,17 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGoogleSheets } from "../../contexts/formsGoogleSheetsContext"; 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 const AddRowForm = ({turno}) => {
   
-  const { addNewRow, updateTurnoEstado } = useGoogleSheets();
+  const { addNewRow, updateTurnoEstado, dataUsers, dataUserLog, fetchUserProfile, fetchDataUsers } = useGoogleSheets();
+  const [ userLog, setUserLog ] = useState() 
+
+
+  useEffect(() => {
+      const fetchData = async () => {
+        await fetchDataUsers(); 
+        await fetchUserProfile();
+      };
+    
+      fetchData();
+    }, []); // 👈 Se ejecuta solo al montar el componente
+    
+    useEffect(() => {
+      userLogeado();
+    }, [dataUsers, dataUserLog]); // 👈 Solo se ejecuta cuando cambian los datos
+    
+    const userLogeado = () => {
+      if (!dataUsers.length || !dataUserLog?.email) return;
+    
+      const foundUser = dataUsers.find((user) => user.EMAIL === dataUserLog.email);
+    
+      if (foundUser && (!userLog || userLog.EMAIL !== foundUser.EMAIL)) {
+        setUserLog(foundUser);
+      }
+    };
+  
 
   const [newRowData, setNewRowData] = useState({
     RESPONSABLE: "",
     CONTROL_STOCK: "",
-    CHECKLIST: "",
-    REGISTRO_DRIVE: "",
+    LLEVA_INFORME: "",
+    ESTADO_INFORME: "",
     CONTROL_CALIDAD: "",
     MARCA_TEMPORAL: "",
     CORREO: "",
@@ -60,7 +86,7 @@ const AddRowForm = ({turno}) => {
          <Modal.Body>
             <form onSubmit={handleSubmit}>
               <p>Responsable:</p>
-              <input className="mb-1" type="text" name="RESPONSABLE" value={newRowData.RESPONSABLE} onChange={handleInputChange} />
+              <input className="mb-1" type="text" name="RESPONSABLE" value={turno.CREADOR_TURNO} onChange={handleInputChange} />
               <hr />
               <p>Control de Stock:</p>
               <input className="mb-1" type="text" name="CONTROL_STOCK" value={newRowData.CONTROL_STOCK} onChange={handleInputChange} />
@@ -108,7 +134,7 @@ const AddRowForm = ({turno}) => {
               <input className="mb-1" type="text" name="EETT" value={newRowData.EETT} onChange={handleInputChange} />
               <hr />
               <p>Tecnico:</p>
-              <input className="mb-1" type="text" name="TECNICO" value={newRowData.TECNICO} onChange={handleInputChange} />
+              <input className="mb-1" type="text" name="TECNICO" value={userLog.EMAIL} onChange={handleInputChange} />
               <hr />
               <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>

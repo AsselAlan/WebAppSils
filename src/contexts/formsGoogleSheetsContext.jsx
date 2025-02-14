@@ -240,7 +240,7 @@ export const GoogleSheetsProvider = ({ children }) => {
       }
   
       values = transformArrayToObjects(values);
-  
+      
       // 🔹 Esta línea fuerza a React a detectar cambios
       setDataTurnos(prevTurnos => JSON.stringify(prevTurnos) !== JSON.stringify(values) ? values : prevTurnos);
       

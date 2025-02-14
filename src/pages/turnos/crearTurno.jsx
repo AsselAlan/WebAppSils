@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGoogleSheets } from "../../contexts/formsGoogleSheetsContext";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 const CreateTurno = () => {
-  const { createTurno } = useGoogleSheets();
+  const { createTurno, dataUsers, dataUserLog, fetchUserProfile, fetchDataUsers } = useGoogleSheets();
   const [newTurno, setNewTurno] = useState({
     ESTADO: "PENDIENTE",
     BASE: "",
@@ -20,9 +20,34 @@ const CreateTurno = () => {
   });
 
   const [show, setShow] = useState(false);
+  const [userLog, setUserLog] = useState(null);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const userLogeado = () => {
+    if (!dataUsers.length || !dataUserLog?.email) return;
+  
+    const foundUser = dataUsers.find((user) => user.EMAIL === dataUserLog.email);
+  
+    if (foundUser && (!userLog || userLog.EMAIL !== foundUser.EMAIL)) {
+      setUserLog(foundUser);
+    }
+  };
+
+ useEffect(() => {
+    const fetchData = async () => {
+      await fetchDataUsers(); 
+      await fetchUserProfile();
+    };
+  
+    fetchData();
+  }, [])
+
+    
+  useEffect(() => {
+    userLogeado();
+  }, [dataUsers, dataUserLog]);
 
   const handleInputChange = (e) => {
     setNewTurno({
@@ -56,8 +81,17 @@ const CreateTurno = () => {
             <p>Horario:</p>
             <input type="time" name="HORARIO" value={newTurno.HORARIO} onChange={handleInputChange} />
             <hr />
-            <p>Técnico Responsable:</p>
-            <input type="text" name="TECNICO_RESPONSABLE" value={newTurno.TECNICO_RESPONSABLE} onChange={handleInputChange} />
+            <p>Técnico Responsable::</p>
+            <select name="TECNICO_RESPONSABLE" value={newTurno.TECNICO_RESPONSABLE} onChange={handleInputChange} required>
+              <option value="">Seleccionar</option>
+              {dataUsers?.map((user)=>{
+                  if(user.ACCESO === "TECNICO"){
+                    return <option value={user.EMAIL} >{user.NOMBRE} {user.APELLIDO}</option>
+                  } 
+              })}
+            </select>
+            {/* <p>Técnico Responsable:</p>
+            <input type="text" name="TECNICO_RESPONSABLE" value={newTurno.TECNICO_RESPONSABLE} onChange={handleInputChange} /> */}
             <hr />
             <p>Trabajo:</p>
             <input type="text" name="TRABAJO" value={newTurno.TRABAJO} onChange={handleInputChange} />

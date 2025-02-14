@@ -63,7 +63,7 @@ function NavBar() {
             Completos
           </NavDropdown.Item>
         </NavDropdown>
-        <Link to="tabla/unidades" className='nav-link'>Unidades</Link>
+        <Link to="tabla/forms" className='nav-link'>Unidades</Link>
       </Nav>
       )
     }
@@ -83,8 +83,7 @@ function NavBar() {
           </NavDropdown>
           <CreateTurno/>
           <CreateUser/>
-          <Nav.Link href="#home">Forms</Nav.Link>
-          <Nav.Link href="#link">Unidades</Nav.Link>
+          <Link to="tabla/forms" className='nav-link'>Forms</Link>
           <Nav.Link href="#link">Informes</Nav.Link>
         </Nav>
       )
@@ -108,7 +107,15 @@ function NavBar() {
               <>
                 {renderAcceso()}
                 <span className="material-symbols-outlined m-1 text-white">person</span>
-                <Nav.Link className='me-2' href="#link">{userLog.APELLIDO} {userLog.NOMBRE}</Nav.Link>
+                <h6 className='m-2 text-white' >
+                  {userLog.APELLIDO.charAt(0).toUpperCase() + userLog.APELLIDO.slice(1).toLowerCase()} 
+                  { " " }
+                  {userLog.NOMBRE.charAt(0).toUpperCase() + userLog.NOMBRE.slice(1).toLowerCase()}
+                </h6>
+
+                <h6 className='m-2 text-white' >
+                  {userLog.ACCESO.charAt(0).toUpperCase() + userLog.ACCESO.slice(1).toLowerCase()}
+                </h6>
               </>
                 : null }
               <OAuth />

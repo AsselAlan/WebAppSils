@@ -8,7 +8,7 @@ import { useGoogleSheets } from "./contexts/formsGoogleSheetsContext.jsx";
 import Login from './pages/login/login.jsx';
 import NavBar from './pages/nav/navBar.jsx';
 import Turnos from './pages/turnos/turnos.jsx';
-import FormDataTable from './pages/table/dataTable.jsx';
+import FormDataTable from './pages/table/dataTableForms.jsx';
 
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
           <Route path='/turnos/pendientes' element={<TurnosPendientes/>} />
           <Route path='/turnos/suspendidos' element={<TurnosSuspendidos/>} />
           <Route path='/turnos/completos' element={<TurnosCompletos/>} />
-          <Route path='/tabla/unidades' element={<FormDataTable />} />
+          <Route path='/tabla/forms' element={<FormDataTable />} />
         </Routes>
       </>
       
