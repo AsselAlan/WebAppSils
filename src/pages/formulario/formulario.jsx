@@ -104,7 +104,7 @@ const AddRowForm = ({turno}) => {
               <input className="mb-1" type="text" name="MARCA_TEMPORAL" value={newRowData.MARCA_TEMPORAL} onChange={handleInputChange} />
               <hr />
               <p>Correo:</p>
-              <input className="mb-1" type="email" name="CORREO" value={newRowData.CORREO} onChange={handleInputChange} />
+              <input className="mb-1" type="EMAIL" name="CORREO" value={newRowData.EMAIL} onChange={handleInputChange} />
               <hr />
               <p>Dominio de Tractor:</p>
               <input className="mb-1" type="text" name="DOMINIO_TC" value={newRowData.DOMINIO_TC} placeholder={turno.DOMINIO_TRACTOR}  onChange={handleInputChange} />
@@ -134,7 +134,7 @@ const AddRowForm = ({turno}) => {
               <input className="mb-1" type="text" name="EETT" value={newRowData.EETT} onChange={handleInputChange} />
               <hr />
               <p>Tecnico:</p>
-              <input className="mb-1" type="text" name="TECNICO" value={userLog.EMAIL} onChange={handleInputChange} />
+              <input className="mb-1" type="text" name="TECNICO" value={userLog?.EMAIL || ""} onChange={handleInputChange} />
               <hr />
               <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
