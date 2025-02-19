@@ -47,9 +47,9 @@ const FormDataTable = () => {
           style={{
             backgroundColor:
               row.ESTADO_INFORME?.trim().toUpperCase() === "COMPLETO"
-                ? "lightgreen"
+                ? "rgba(0, 128, 0, 0.5)"
                 : row.ESTADO_INFORME?.trim().toUpperCase() === "PENDIENTE"
-                ? "yellow"
+                ? "rgba(255, 165, 0, 0.5)"
                 : "transparent",
             padding: "5px",
             borderRadius: "5px",
@@ -70,9 +70,9 @@ const FormDataTable = () => {
           style={{
             backgroundColor:
               row.CONTROL_CALIDAD?.trim().toUpperCase() === "CORRECTO"
-                ? "lightgreen"
+                ? "rgba(0, 128, 0, 0.5)"
                 : row.CONTROL_CALIDAD?.trim().toUpperCase() === "INCORRECTO"
-                ? "red"
+                ? "rgba(255, 0, 0, 0.5)"
                 : "transparent",
             padding: "5px",
             borderRadius: "5px",

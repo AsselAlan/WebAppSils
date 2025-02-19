@@ -30,6 +30,7 @@ export const GoogleSheetsProvider = ({ children }) => {
   const [dataUserLog, setDataUserLog] = useState([]);  
   const [dataUsers, setDataUsers] = useState([]);  
   const [dataTurnos, setDataTurnos] = useState([]);  
+  const [dataNoticias, setDataNoticias] = useState([]);
 
   useEffect(() => {
     function loadGapi() {
@@ -96,6 +97,7 @@ export const GoogleSheetsProvider = ({ children }) => {
       await fetchDataTurnos();
       await fetchUserProfile();
       await fetchDataForm();
+      await fetchDataNoticias(); // Agregar esta línea
     };
 
     fetchData();
@@ -225,40 +227,17 @@ export const GoogleSheetsProvider = ({ children }) => {
       setDataForm([]); // ✅ Si hay error, mantiene dataForm como un array vacío
     }
   };
-
-  const fetchDataTurnos = async () => {
-    try {
-      const response = await gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: SPREADSHEET_ID,
-        range: "TURNOS!A:L",
-      });
   
-      let values = response.result.values || [];
-      if (values.length === 0) {
-        console.error("ERROR: no se encontraron datos en TURNOS");
-        return;
-      }
   
-      values = transformArrayToObjects(values);
-      
-      // 🔹 Esta línea fuerza a React a detectar cambios
-      setDataTurnos(prevTurnos => JSON.stringify(prevTurnos) !== JSON.stringify(values) ? values : prevTurnos);
-      
-    } catch (err) {
-      console.error("Error al obtener turnos:", err.message);
-    }
-  };
-
-
-   
+  
   const addNewRow = async (newRowData) => {
     try {
       // Define la hoja y el rango donde agregar los datos
-      const range = "FORM!A:P"; // Rango de la hoja donde agregarás la fila
-  
+      const range = "FORM!A:Q"; // Rango de la hoja donde agregarás la fila
+      
       // Formatea la fila de datos para que coincida con la estructura de la hoja
       const values = [newRowData]; // newRowData debe ser un array que coincida con las columnas de la hoja
-  
+      
       // Usa el método spreadsheets.values.append() para agregar la fila
       const response = await gapi.client.sheets.spreadsheets.values.append({
         spreadsheetId: SPREADSHEET_ID, // ID de la hoja de cálculo
@@ -268,18 +247,41 @@ export const GoogleSheetsProvider = ({ children }) => {
           values: values, // Datos a insertar
         },
       });
-  
+      
       // Puedes manejar la respuesta aquí, por ejemplo, confirmando que los datos fueron agregados
       console.log("Nuevo dato agregado:", response);
       fetchDataForm(); // Vuelve a cargar los datos después de agregar la fila
-  
+      
     } catch (err) {
       console.error("Error al agregar la fila:", err.message);
     }
   };
-
+  
   
   //TURNOS
+  
+    const fetchDataTurnos = async () => {
+      try {
+        const response = await gapi.client.sheets.spreadsheets.values.get({
+          spreadsheetId: SPREADSHEET_ID,
+          range: "TURNOS!A:L",
+        });
+    
+        let values = response.result.values || [];
+        if (values.length === 0) {
+          console.error("ERROR: no se encontraron datos en TURNOS");
+          return;
+        }
+    
+        values = transformArrayToObjects(values);
+        
+        // 🔹 Esta línea fuerza a React a detectar cambios
+        setDataTurnos(prevTurnos => JSON.stringify(prevTurnos) !== JSON.stringify(values) ? values : prevTurnos);
+        
+      } catch (err) {
+        console.error("Error al obtener turnos:", err.message);
+      }
+    };
 
 
   const updateTurnoEstado = async (id, nuevoEstado, descripcionTecnico) => {
@@ -377,6 +379,75 @@ export const GoogleSheetsProvider = ({ children }) => {
       console.error("Error al eliminar el turno:", error);
     }
   };
+
+  //NOTICIAS
+
+
+  const fetchDataNoticias = async () => {
+    try {
+      const response = await gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range: "NOTICIAS!A:G", // Ajusta el rango según las columnas de tu hoja
+      });
+  
+      let values = response.result.values || [];
+      if (values.length === 0) {
+        console.error("ERROR: no se encontraron datos en NOTICIAS");
+        return;
+      }
+  
+      // Transformar los datos en objetos
+      values = transformArrayToObjects(values);
+  
+      // Actualizar el estado solo si los datos han cambiado
+      setDataNoticias(prevNoticias => 
+        JSON.stringify(prevNoticias) !== JSON.stringify(values) ? values : prevNoticias
+      );
+  
+    } catch (err) {
+      console.error("Error al obtener noticias:", err.message);
+    }
+  };
+
+  const createNoticia = async (nuevaNoticia) => {
+    try {
+      if (!isAuthorized) {
+        console.error("No autorizado para modificar datos.");
+        return;
+      }
+  
+      // Define el rango de la hoja NOTICIAS
+      const range = "NOTICIAS!A:F"; // Ajusta el rango según las columnas de tu hoja
+  
+      // Formatea la nueva noticia como un array que coincida con las columnas de la hoja
+      const values = [
+        [
+          nuevaNoticia.CREADOR,
+          nuevaNoticia.MENSAJE,
+          nuevaNoticia.TITULO,
+          nuevaNoticia.PARA_ROL,
+          nuevaNoticia.IMPORTANCIA,
+          nuevaNoticia.FECHA,
+        ],
+      ];
+  
+      // Usa el método spreadsheets.values.append para agregar la nueva fila
+      const response = await gapi.client.sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: range,
+        valueInputOption: "RAW", // Usa 'RAW' para insertar los datos tal como están
+        resource: {
+          values: values, // Datos a insertar
+        },
+      });
+  
+      console.log("Nueva noticia agregada:", response);
+      fetchDataNoticias(); // Recarga las noticias después de agregar una nueva
+  
+    } catch (err) {
+      console.error("Error al agregar la noticia:", err.message);
+    }
+  };
   
   return (
     <GoogleSheetsContext.Provider
@@ -386,17 +457,20 @@ export const GoogleSheetsProvider = ({ children }) => {
         dataUsers,
         dataUserLog,
         dataForm,
+        dataNoticias,
         handleAuthClick,
         handleSignoutClick,
         fetchDataTurnos,
         fetchDataForm,
         fetchUserProfile,
         fetchDataUsers,
+        fetchDataNoticias,
         updateTurnoEstado,
         addNewRow,
         createTurno,
         deleteTurno,
         createUser,
+        createNoticia,
       }}
     >
       {children}

@@ -49,6 +49,16 @@ const CreateTurno = () => {
     userLogeado();
   }, [dataUsers, dataUserLog]);
 
+  useEffect(() => {
+      if (userLog) {
+        setNewTurno((prev) => ({
+          ...prev,
+          CREADOR_TURNO: userLog?.EMAIL || "",
+        }));
+      }
+    }, [userLog]);
+  
+
   const handleInputChange = (e) => {
     setNewTurno({
       ...newTurno,
@@ -84,9 +94,9 @@ const CreateTurno = () => {
             <p>Técnico Responsable::</p>
             <select name="TECNICO_RESPONSABLE" value={newTurno.TECNICO_RESPONSABLE} onChange={handleInputChange} required>
               <option value="">Seleccionar</option>
-              {dataUsers?.map((user)=>{
+              {dataUsers?.map((user, index)=>{
                   if(user.ACCESO === "TECNICO"){
-                    return <option value={user.EMAIL} >{user.NOMBRE} {user.APELLIDO}</option>
+                    return <option key={index} value={user.EMAIL} >{user.NOMBRE} {user.APELLIDO}</option>
                   } 
               })}
             </select>
@@ -97,7 +107,7 @@ const CreateTurno = () => {
             <input type="text" name="TRABAJO" value={newTurno.TRABAJO} onChange={handleInputChange} />
             <hr />
             <p>Creador del Turno:</p>
-            <input type="text" name="CREADOR_TURNO" value={newTurno.CREADOR_TURNO} onChange={handleInputChange} />
+            <input type="text" name="CREADOR_TURNO" value={userLog?.EMAIL || ""} onChange={handleInputChange} />
             <hr />
             <p>Dominio SR:</p>
             <input type="text" name="DOMINIO_SR" value={newTurno.DOMINIO_SR} onChange={handleInputChange} />

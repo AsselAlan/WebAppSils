@@ -9,6 +9,7 @@ import Login from './pages/login/login.jsx';
 import NavBar from './pages/nav/navBar.jsx';
 import Turnos from './pages/turnos/turnos.jsx';
 import FormDataTable from './pages/table/dataTableForms.jsx';
+import Home from './pages/home-noticias/home.jsx';
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <NavBar />
 
         <Routes>
+          <Route path='/home' element={<Home/>} />
           <Route path='/turnos/pendientes' element={<TurnosPendientes/>} />
           <Route path='/turnos/suspendidos' element={<TurnosSuspendidos/>} />
           <Route path='/turnos/completos' element={<TurnosCompletos/>} />

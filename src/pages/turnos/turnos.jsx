@@ -46,6 +46,7 @@ function Turnos({ ESTADO }) {
 
     return dataTurnos
       .filter((turno) => {
+  
         if (turno.ESTADO !== ESTADO) return false; // Filtra por estado
 
         // Si es TÉCNICO, solo muestra sus turnos

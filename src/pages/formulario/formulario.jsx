@@ -21,6 +21,15 @@ const AddRowForm = ({turno}) => {
     useEffect(() => {
       userLogeado();
     }, [dataUsers, dataUserLog]); // 👈 Solo se ejecuta cuando cambian los datos
+
+      useEffect(() => {
+        if (userLog) {
+          setNewRowData((prev) => ({
+            ...prev,
+            TECNICO: userLog.EMAIL || "",
+          }));
+        }
+      }, [userLog]);
     
     const userLogeado = () => {
       if (!dataUsers.length || !dataUserLog?.email) return;
@@ -32,12 +41,26 @@ const AddRowForm = ({turno}) => {
       }
     };
   
+      useEffect(() => {
+          if (userLog) {
+            setNewRowData((prev) => ({
+              ...prev,
+              TECNICO: userLog?.NOMBRE + userLog?.APELLIDO|| "",
+              CORREO: userLog?.EMAIL || "",
+              RESPONSABLE: userLog?.EMAIL || "",
+              DOMINIO_TC: turno.DOMINIO_TRACTOR,
+              DOMINIO_SR: turno.DOMINIO_SR
+            }));
+          }
+        }, [userLog]);
+      
+    
 
   const [newRowData, setNewRowData] = useState({
     RESPONSABLE: "",
-    CONTROL_STOCK: "",
+    BASE: "",
     LLEVA_INFORME: "",
-    ESTADO_INFORME: "",
+    ESTADO_INFORME: "PENDIENTE",
     CONTROL_CALIDAD: "",
     MARCA_TEMPORAL: "",
     CORREO: "",
@@ -88,14 +111,15 @@ const AddRowForm = ({turno}) => {
               <p>Responsable:</p>
               <input className="mb-1" type="text" name="RESPONSABLE" value={turno.CREADOR_TURNO} onChange={handleInputChange} />
               <hr />
-              <p>Control de Stock:</p>
-              <input className="mb-1" type="text" name="CONTROL_STOCK" value={newRowData.CONTROL_STOCK} onChange={handleInputChange} />
+              <p>Base:</p>
+              <input className="mb-1" type="text" name="BASE" value={newRowData.BASE} onChange={handleInputChange} />
               <hr />
-              <p>Checklist:</p>
-              <input className="mb-1" type="text" name="CHECKLIST" value={newRowData.CHECKLIST} onChange={handleInputChange} />
-              <hr />
-              <p>Registro en Drive:</p>
-              <input className="mb-1" type="text" name="REGISTRO_DRIVE" value={newRowData.REGISTRO_DRIVE} onChange={handleInputChange} />
+              <p>La unidad requiere informe:</p>
+              <select className="mb-1" type="text" name="LLEVA_INFORME" value={newRowData.LLEVA_INFORME} onChange={handleInputChange} >
+                <option value="">Seleccionar</option>
+                <option value="SI">SI LLEVA</option>
+                <option value="NO">NO LLEVA</option>
+              </select>
               <hr />
               <p>Control de Calidad:</p>
               <input className="mb-1" type="text" name="CONTROL_CALIDAD" value={newRowData.CONTROL_CALIDAD} onChange={handleInputChange} />
@@ -104,7 +128,7 @@ const AddRowForm = ({turno}) => {
               <input className="mb-1" type="text" name="MARCA_TEMPORAL" value={newRowData.MARCA_TEMPORAL} onChange={handleInputChange} />
               <hr />
               <p>Correo:</p>
-              <input className="mb-1" type="EMAIL" name="CORREO" value={newRowData.EMAIL} onChange={handleInputChange} />
+              <input className="mb-1" type="EMAIL" name="CORREO" value={userLog?.EMAIL || ""} onChange={handleInputChange} />
               <hr />
               <p>Dominio de Tractor:</p>
               <input className="mb-1" type="text" name="DOMINIO_TC" value={newRowData.DOMINIO_TC} placeholder={turno.DOMINIO_TRACTOR}  onChange={handleInputChange} />

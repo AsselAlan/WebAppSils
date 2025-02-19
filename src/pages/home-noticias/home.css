@@ -1,0 +1,8 @@
+.container-noticias .button-crear{
+    background-color: #FF6A00 !important;
+    border: none;
+}
+
+.container-noticias .button-crear:hover{
+    color: black;
+}

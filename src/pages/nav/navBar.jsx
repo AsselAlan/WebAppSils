@@ -52,6 +52,7 @@ function NavBar() {
     if(userLog.ACCESO === "TECNICO"){
       return(
         <Nav className="me-auto">
+        <Link to="home" className='nav-link'>Home</Link>
         <NavDropdown title="Turnos" id="basic-nav-dropdown">
           <NavDropdown.Item as={Link} to="turnos/pendientes" className="my-2">
             Pendientes
@@ -70,6 +71,7 @@ function NavBar() {
     if(userLog.ACCESO === "MONITOREO"){
       return(
           <Nav className="me-auto">
+            <Link to="home" className='nav-link'>Home</Link>
             <NavDropdown title="Turnos" id="basic-nav-dropdown">
             <NavDropdown.Item as={Link} to="turnos/pendientes" className="my-2">
               Pendientes
@@ -95,11 +97,13 @@ function NavBar() {
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container className='containerNavBar'>
-        <Navbar.Brand href="#home">
+        <Navbar.Brand>
+        <Link to="home" className='nav-link'>
           <div className="divTittle">
               <img src={logo} alt="" />
               <h3>Silstech<span>.</span></h3>
           </div>
+        </Link>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
